@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import Error from "./Error"
 
-const Formulario = () => {
+const Formulario = ({pacientes, setPacientes}) => {
 
   const [nombre, setNombre] = useState("");
   const [propietario, setPropietario] = useState("");
@@ -8,14 +9,35 @@ const Formulario = () => {
   const [fecha, setFecha] = useState("");
   const [sintomas, setSintomas] = useState("");
 
+  const [error, setError] = useState(false);
+
   const handlesubmit = e => {
     e.preventDefault();
 
     if([ nombre, propietario, email, fecha, sintomas ].includes("")) {
       console.log("Todos los campos son obligatorios");
-    }else{
-      console.log("Paciente agregado");
+
+      setError(true);
+      return
     }
+
+    setError(false);
+
+    const objPaciente = {
+      nombre,
+      propietario,
+      email,
+      fecha,
+      sintomas
+    }
+
+    setPacientes([...pacientes, objPaciente])
+
+    setNombre('')
+    setPropietario('')
+    setEmail('')
+    setFecha('')
+    setSintomas('')
   }
 
   return (
@@ -30,6 +52,7 @@ const Formulario = () => {
       className="bg-white shadow-md rounded-lg py-10 px-5 mb-10"
       onSubmit={handlesubmit}
       >
+
         <div className="mb-5">
           <label htmlFor="mascota" className="block text-gray-700 uppercase font-bold">
               Nombre de la mascota
@@ -98,7 +121,9 @@ const Formulario = () => {
           />
         </div>
 
-        <div className="">
+        { error && <Error><p>Todos los campos son obligatorios</p></Error>}
+
+        <div className="mt-3">
           <input
             type="submit"
             className="bg-indigo-600 w-full p-3 text-white uppercase
@@ -107,6 +132,9 @@ const Formulario = () => {
           />
 
         </div>
+
+
+
       </form>
     </div>
   )

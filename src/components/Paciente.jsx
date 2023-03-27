@@ -1,4 +1,6 @@
 const Paciente = () => {
+
+  
   return (
     <div className="mx-4 my-5 bg-white shadow-md rounded-lg py-10 px-4">
 
