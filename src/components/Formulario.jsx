@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Error from "./Error"
 
-const Formulario = ({pacientes, setPacientes, paciente}) => {
+const Formulario = ({pacientes, setPacientes, paciente, setPaciente}) => {
 
   const [nombre, setNombre] = useState("");
   const [propietario, setPropietario] = useState("");
@@ -11,9 +11,16 @@ const Formulario = ({pacientes, setPacientes, paciente}) => {
 
   const [error, setError] = useState(false);
 
-  // useEffect(() => {
-
-  // }, [paciente])
+  //lenar el formulario cuando se edita
+  useEffect(() => {
+    if (Object.keys(paciente).length > 0) {
+      setNombre(paciente.nombre)
+      setPropietario(paciente.propietario)
+      setEmail(paciente.email)
+      setFecha(paciente.fecha)
+      setSintomas(paciente.sintomas)
+    }
+  }, [paciente])
 
   const generarId = () => {
     const random = Math.random().toString(36).slice(2);
@@ -39,10 +46,23 @@ const Formulario = ({pacientes, setPacientes, paciente}) => {
       email,
       fecha,
       sintomas,
-      id: generarId()
     }
 
-    setPacientes([...pacientes, objPaciente])
+    //editar el formulario
+    if (paciente.id) {
+      // si es un paciente existente asignamos el id que ya tiene el paciente
+      objPaciente.id = paciente.id
+      const pacientesEditados = pacientes.map(pacienteState => {
+        return pacienteState.id === objPaciente.id ? objPaciente : pacienteState
+      })
+      setPacientes(pacientesEditados)
+      setPaciente({})
+    }else{
+      // si es un nuevo paciente generamos su id
+      objPaciente.id = generarId()
+      setPacientes([...pacientes, objPaciente])
+    }
+
 
     setNombre('')
     setPropietario('')
@@ -139,7 +159,7 @@ const Formulario = ({pacientes, setPacientes, paciente}) => {
             type="submit"
             className="bg-indigo-600 w-full p-3 text-white uppercase
             font-bold hover:bg-indigo-700 cursor-pointer transition-all"
-            value="Agregar Paciente"
+            value={ paciente.id ? "Editar Paciente" : "Agregar Paciente" }
           />
 
         </div>
